@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
+
+    <script>
+        const csvfile = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREUnom6q_wwth_howEqOjMLTSn4hFn2Siq8ZXz9NuiKCjuBZnV59KEXw_fnWNZIX73mAs5oemSu4py/pub?gid=0&single=true&output=csv';
+        let data = "";
+
+        const aver = () => {
+            console.log('data: ', data);
+        }
+
+        fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(csvfile)}`).then(response => {
+
+            if (response.ok) return response.json();
+            else throw new Error('Network response was not ok.')
+        }).then(p => {
+            data = p.contents.split('\r\n').map(p => p.split(','));
+            aver();
+        });
+
+        const getNombre = (doc) => {
+            if(!doc) return "";
+
+            const l = data.length;
+            for (let i = 0; i < l; i ++) {
+                if(data[i][1] === doc) return data[i][0];
+            }
+            return "";
+        }
+
+
+    </script>
+    
+</head>
+
+<body>
+    <div class="container">
+        <h1>Certificate Generator</h1>
+        <label>
+            Nombre:
+            <input id="name" type='text'>
+        </label>
+        <br>
+        <a href="#" id="download-btn">descargar</a>
+        <br>
+        <canvas id="canvas" height="350px" width="500px"></canvas>
+    </div>
+    <script>
+
+        const canvas = document.getElementById('canvas')
+        const ctx = canvas.getContext('2d')
+        const nombreInput = document.getElementById('name')
+        const descargaBtn = document.getElementById('download-btn')
+
+        const image = new Image()
+        image.src = 'certificado.jpg'
+        image.crossorigin="anonymous"
+        image.onload = function () {
+            drawImage()
+        }
+
+        function drawImage() {
+            // ctx.clearRect(0, 0, canvas.width, canvas.height)
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
+            ctx.font = '40px monotype corsiva'
+            ctx.fillStyle = '#7a7a7a'
+            const doc = nombreInput.value;
+            const nombre = getNombre(doc);
+            ctx.fillText(nombre, 210, 170)
+        }
+
+        nombreInput.addEventListener('input', function () {
+            drawImage()
+        })
+
+        descargaBtn.addEventListener('click', function () {
+            descargaBtn.href = canvas.toDataURL('image/jpg')
+            descargaBtn.download = 'Certificado - ' + nombreInput.value
+        })
+
+    </script>
+</body>
+
+
+</html>
