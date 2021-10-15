@@ -6,13 +6,14 @@
 
     <script>
         const csvfile = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vREUnom6q_wwth_howEqOjMLTSn4hFn2Siq8ZXz9NuiKCjuBZnV59KEXw_fnWNZIX73mAs5oemSu4py/pub?gid=0&single=true&output=csv';
+                         
         let data = "";
 
         const aver = () => {
             console.log('data: ', data);
         }
 
-        fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(csvfile)}`).then(response => {
+        fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(csvfile)}&ck=${Math.random()}`).then(response => {
 
             if (response.ok) return response.json();
             else throw new Error('Network response was not ok.')
@@ -38,15 +39,14 @@
 
 <body>
     <div class="container">
-        <h1>Certificado Maker 😊</h1>
+        <h1>FUNDACIÓN FARKIM</h1>
         <label>
-            Nombre:
+            Nro. de documento:&nbsp;
             <input id="name" type='text'>
-        </label>
-        <br>
+        </label>&nbsp;
         <a href="#" id="download-btn">descargar</a>
-        <br>
-        <canvas id="canvas" height="350px" width="500px"></canvas>
+        <br><br>
+        <canvas id="canvas" height="595px" width="842px"></canvas>
     </div>
     <script>
 
@@ -56,7 +56,7 @@
         const descargaBtn = document.getElementById('download-btn')
 
         const image = new Image()
-        image.src = 'certificado.jpg'
+        image.src = 'certificado_2.png'
         image.crossOrigin = 'Anonymous';
         image.onload = function () {
             drawImage()
@@ -69,7 +69,8 @@
             ctx.fillStyle = '#7a7a7a'
             const doc = nombreInput.value;
             const nombre = getNombre(doc);
-            ctx.fillText(nombre, 210, 170)
+            const textWidth = ctx.measureText(nombre).width;
+            ctx.fillText(nombre, 160 + ((530-textWidth) / 2), 330)
         }
 
         nombreInput.addEventListener('input', function () {
